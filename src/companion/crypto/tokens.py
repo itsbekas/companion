@@ -22,7 +22,7 @@ currencies = {
     'cro':{
         'id':'crypto-com-chain',
         'symbol':'cro',
-        'name':'Crypto.com Coin'
+        'name':'Cronos'
     },
     'sol':{
         'id':'solana',

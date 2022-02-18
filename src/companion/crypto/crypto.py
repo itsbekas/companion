@@ -1,7 +1,11 @@
-from rich.console import Group, RenderableType
+from rich import box
+from rich.align import Align
+from rich.console import group, Group, RenderableType
 from rich.panel import Panel
+from rich.style import Style
 from rich.text import Text
 
+from textual.views import GridView, WindowView
 from textual.widget import Widget
 from textual.widgets import Placeholder
 
@@ -13,15 +17,31 @@ class Crypto(Widget):
         super().__init__()
     
     def render(self) -> Panel:
+
         return Panel(
-            Placeholder(),
-            title="Crypto"
+            self.get_currencies_text(),
+            title="Crypto",
+            expand=True,
+            box=box.SQUARE
         )
 
-    @group
+    @group()
     def get_currencies_text(self):
-        currencies = self.get_favorite_currencies()
-        yield Text("")
+        for currency in self.cg.get_currencies():
+            yield self.get_currency_text(currency)
 
-    def get_favorite_currencies(self):
-        yield 
+    @group()
+    def get_currency_text(self, currency):
+        yield Text('{}: {}€'.format(currency['name'], currency['price']), end=' ')
+        yield Align(PercentageText(currency['24h_change']))
+
+class PercentageText(Text):
+    def __init__(self, percentage):
+        if percentage > 0.0:
+            style="green"
+        elif percentage < 0.0:
+            style="red"
+        elif percentage == 0:
+            style="white"
+
+        super().__init__("{:.2f}%".format(percentage), style=Style(color="red"))
