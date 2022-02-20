@@ -2,6 +2,7 @@ from pycoingecko import CoinGeckoAPI
 from .tokens import currencies
 
 import datetime
+
 from copy import deepcopy
 
 now = datetime.datetime.now()
@@ -9,6 +10,7 @@ now = datetime.datetime.now()
 class CoinGecko():
     def __init__(self):
         self.api = CoinGeckoAPI()
+        self.db = CoinGeckoDatabase()
         # TODO: get currencies from database
         self.currencies = [c for c in currencies.values()]
 
@@ -31,3 +33,8 @@ class CoinGecko():
     
     def get_values():
         pass
+
+from database import Database
+
+class CoinGeckoDatabase(Database):
+    pass

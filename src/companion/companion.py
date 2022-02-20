@@ -1,17 +1,20 @@
-from textual.app import App
+from rich.live import Live
 
 from crypto.crypto import Crypto
 
-class Companion(App):
+from time import sleep
 
-    def load_db(self, db):
-        """Loads database if existing, else creates one"""
-        pass
-    
-    async def on_mount(self) -> None:
-        await self.view.dock(Crypto())
+from layout import RootLayout
 
-Companion.run()
+l = RootLayout()
+l["main"].update(Crypto())
+
+with Live(l, refresh_per_second=10, screen=True):
+    i = 0
+    while i < 1000:
+        sleep(0.1)
+        i += 1
+        
 """
 Available Parameters:
 database -- An alternative name for the database (default companion)

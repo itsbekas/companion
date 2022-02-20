@@ -1,3 +1,7 @@
+import asyncio
+
+from requests.exceptions import ConnectionError
+
 from rich import box
 from rich.align import Align
 from rich.console import group, Group, RenderableType
@@ -11,19 +15,32 @@ from textual.widgets import Placeholder
 
 from .coingecko import CoinGecko
 
+def test():
+    asyncio.create_task()
+
 class Crypto(Widget):
     def __init__(self):
         self.cg = CoinGecko()
+        self.render_text = Text('Connecting to CoinGecko...')
+        self.update_text()
         super().__init__()
     
     def render(self) -> Panel:
 
         return Panel(
-            self.get_currencies_text(),
+            Align.center(
+                self.render_text),
             title="Crypto",
             expand=True,
-            box=box.SQUARE
+            box=box.SQUARE,
+            style='bright_white on grey11'
         )
+
+    def update_text(self):
+        try:
+            self.render_text = self.get_currencies_text()
+        except ConnectionError:
+            self.render_text = Text('Connection failed.')
 
     @group()
     def get_currencies_text(self):
@@ -32,16 +49,20 @@ class Crypto(Widget):
 
     @group()
     def get_currency_text(self, currency):
-        yield Text('{}: {}€'.format(currency['name'], currency['price']), end=' ')
-        yield Align(PercentageText(currency['24h_change']))
+        yield Text(
+            '{}: {}€'.format(currency['name'], currency['price']),
+            end=' ',
+            style='bright_white'
+        )
+        yield PercentageText(currency['24h_change'])
 
 class PercentageText(Text):
     def __init__(self, percentage):
-        if percentage > 0.0:
-            style="green"
-        elif percentage < 0.0:
-            style="red"
+        if percentage > 0:
+            style="spring_green2"
+        elif percentage < 0:
+            style="rgb(255,75,75)"
         elif percentage == 0:
-            style="white"
+            style="bright_white"
 
-        super().__init__("{:.2f}%".format(percentage), style=Style(color="red"))
+        super().__init__("{:.2f}%".format(percentage), style=style)
