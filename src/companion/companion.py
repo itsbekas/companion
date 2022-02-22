@@ -1,18 +1,19 @@
 from rich.live import Live
 
 from crypto.crypto import Crypto
-
-from time import sleep
-
 from layout import RootLayout
 
+import asyncio
+from time import sleep
+
 l = RootLayout()
-l["main"].update(Crypto())
+c = Crypto()
+l["main"].update(c)
 
 with Live(l, refresh_per_second=10, screen=True):
     i = 0
     while i < 1000:
-        sleep(0.1)
+        sleep(1)
         i += 1
         
 """

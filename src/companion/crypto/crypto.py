@@ -26,7 +26,6 @@ class Crypto(Widget):
         super().__init__()
     
     def render(self) -> Panel:
-
         return Panel(
             Align.center(
                 self.render_text),
@@ -35,6 +34,10 @@ class Crypto(Widget):
             box=box.SQUARE,
             style='bright_white on grey11'
         )
+    
+    async def update(self):
+        self.update_text()
+        await asyncio.sleep(60)
 
     def update_text(self):
         try:
